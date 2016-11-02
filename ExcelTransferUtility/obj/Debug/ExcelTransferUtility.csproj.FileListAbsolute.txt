@@ -1,4 +1,0 @@
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\ExcelTransferUtility.dll
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\ExcelTransferUtility.pdb
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\obj\Debug\ExcelTransferUtility.dll
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\obj\Debug\ExcelTransferUtility.pdb
