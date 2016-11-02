@@ -47,10 +47,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\CSharpJExcel.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Sitecore.Kernel, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -74,13 +70,15 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="bin\CSharpJExcel.dll" />
+    <Content Include="bin\ExcelTransferUtility.dll" />
     <Content Include="sitecore modules\Web\Excel Transfer Utility\ExcelTransferUtility.aspx" />
-    <Content Include="sitecore modules\Web\Excel Transfer Utility\ExcelTransferUtility.css" />
-    <Content Include="sitecore modules\Web\Excel Transfer Utility\ExcelTransferUtility.jpg" />
+    <Content Include="sitecore modules\Web\Excel Transfer Utility\Content\css\ExcelTransferUtility.css" />
+    <Content Include="sitecore modules\Web\Excel Transfer Utility\Content\img\ExcelTransferUtility.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CsvExport.cs" />
+    <Compile Include="sitecore modules\Web\Excel Transfer Utility\Common\Constants.cs" />
+    <Compile Include="sitecore modules\Web\Excel Transfer Utility\Export\CsvExport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="sitecore modules\Web\Excel Transfer Utility\ExcelTransferUtility.aspx.cs">
       <DependentUpon>ExcelTransferUtility.aspx</DependentUpon>

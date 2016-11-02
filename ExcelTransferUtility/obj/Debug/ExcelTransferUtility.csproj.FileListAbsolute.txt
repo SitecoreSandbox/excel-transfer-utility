@@ -13,7 +13,5 @@ D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\VBCSCompiler.ex
 D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\VBCSCompiler.exe.config
 D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\ExcelTransferUtility.dll
 D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\ExcelTransferUtility.pdb
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 D:\Projects\ExcelTransferUtility\ExcelTransferUtility\obj\Debug\ExcelTransferUtility.dll
 D:\Projects\ExcelTransferUtility\ExcelTransferUtility\obj\Debug\ExcelTransferUtility.pdb

@@ -1,18 +1,23 @@
-﻿using System;
+﻿#region Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
-using System.Text;
+using System.Text; 
 
-namespace Sitecore.Module
+#endregion
+
+namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility.Export
 {
+    /// <summary>
+    /// Exports Sitecore items from Sitecore to .csv file
+    /// </summary>
     public class CsvExport
     {
         private readonly List<string> _fields = new List<string>();
         private readonly List<Dictionary<string, object>> _rows = new List<Dictionary<string, object>>();
-
-        private Dictionary<string, object> CurrentRow =>
-            _rows[_rows.Count - 1];
+        private Dictionary<string, object> CurrentRow => _rows[_rows.Count - 1];
 
         public object this[string field]
         {
