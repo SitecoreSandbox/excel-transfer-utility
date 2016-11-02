@@ -1,16 +1,3 @@
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\obj\Debug\ExcelTransferUtility.csprojResolveAssemblyReference.cache
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\csc.exe
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\Microsoft.CodeAnalysis.dll
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\Microsoft.CSharp.Core.targets
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\Microsoft.VisualBasic.Core.targets
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\System.Collections.Immutable.dll
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\System.Reflection.Metadata.dll
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\vbc.exe
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\VBCSCompiler.exe
-D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\roslyn\VBCSCompiler.exe.config
 D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\ExcelTransferUtility.dll
 D:\Projects\ExcelTransferUtility\ExcelTransferUtility\bin\ExcelTransferUtility.pdb
 D:\Projects\ExcelTransferUtility\ExcelTransferUtility\obj\Debug\ExcelTransferUtility.dll
