@@ -1,0 +1,35 @@
+﻿body 
+{
+    background-image:url('ExcelTransferUtility.jpg');
+    padding-top: 10px;
+    color: #FFFFFF;
+}
+.utility-panel
+{
+    padding-top: 10px;
+}
+.fileUpload
+{
+    width: 300px;
+}
+.textbox
+{
+    width: 325px;
+}
+table
+{
+    margin: 30px 0px;
+}
+td
+{
+    padding: 5px 30px 5px 0px;
+}
+#pnlStatus
+{
+    text-align: center;
+}
+li
+{
+    list-style-type: none;
+    margin-left: -40px;
+}
