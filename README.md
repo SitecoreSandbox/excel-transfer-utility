@@ -3,19 +3,18 @@ The Excel Transfer Utility is a simple module that will give you the ability to 
 that are converted into newly created Sitecore items in the content tree. Also, the export functionality will export the data 
 from a Sitecore item (single item or all children items) data to a .csv file for use with an Excel spreadsheet.
 
-Requirements:
+REQUIREMENTS:
 
 Import requirements are as follows:
 
 1. Microsoft Excel 97-2003 files only (Convert newer files to 97-2003 before uploading)
 2. Headers are in the first column of the spreadsheet
 
-Installation:
+INSTALLATION:
 
 Download and install the module as you would a standard package installation
 
 BASIC INSTRUCTIONS:
-Opening the Excel Transfer Utility:
 
 1. Click on the red Sitecore button in the bottom left hand corner
 2. You will see the Excel Transfer Utility in the left column with the other applications
