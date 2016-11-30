@@ -86,6 +86,7 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="Properties\PublishProfiles\LOCAL.pubxml" />
+    <None Include="Properties\PublishProfiles\PROD.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
