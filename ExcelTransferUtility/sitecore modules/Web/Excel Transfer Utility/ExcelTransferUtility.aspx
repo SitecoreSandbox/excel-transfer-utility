@@ -35,7 +35,14 @@
 
                 <%--Upload--%>
                 <asp:Panel ID="PnlUpload" runat="server">
-                    <h4>Please select a file from your computer to import:</h4>
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Microsoft Excel 97-2003 files only (Newer Excel files must be converted to 97-2003 before uploading)</li>
+                        <li>Headers are in the first row of the spreadsheet</li>
+                        <li>Item names are in the first column of the spreadsheet</li>
+                    </ul>
+
+                    <h4>Please select an Excel file from your computer to import:</h4>
                     <p>
                         <asp:FileUpload ID="FuFileToImport" runat="server" CssClass="fileUpload" />
                     </p>
@@ -51,7 +58,7 @@
                         <asp:DropDownList ID="DdlSheetNames" runat="server"></asp:DropDownList>
                     </p>
                     <br />
-                    <h4>Enter template ID to use for imported items:</h4>
+                    <h4>Enter the Template ID to use for the imported items:</h4>
                     <p>Example: {D2775315-00DC-4CF4-8B68-E9748127D188}</p>
                     <p>
                         <asp:TextBox ID="TxtTemplateId" runat="server" CssClass="textbox"></asp:TextBox>
@@ -65,11 +72,6 @@
 
                 <%--Import Mapping & Import--%>
                 <asp:Panel ID="PnlImportMapping" runat="server" Visible="false">
-                    <h4>Select column name to use for item name:</h4>
-                    <p>
-                        <asp:DropDownList ID="DdlItemName" runat="server"></asp:DropDownList>
-                    </p>
-                    <br />                    
                     <asp:ListView ID="LvImportMapping" runat="server" OnItemDataBound="ImportMapping_ItemDataBound">
                         <LayoutTemplate>
                             <h4>Select the fields where excel data will be imported to:</h4>
@@ -96,7 +98,7 @@
                             </tr>
                         </ItemTemplate>
                     </asp:ListView>
-                    <h4>Enter parent item ID (Import items will be imported as children of this item):</h4>
+                    <h4>Enter the Parent Item ID (Import items will be imported as children of this item):</h4>
                     <p>Example: {A91FD891-C477-45F5-B20A-7CFA7F8B53E5}</p>
                     <p>
                         <asp:TextBox ID="TxtParentItemId" runat="server" CssClass="textbox"></asp:TextBox>
@@ -117,7 +119,7 @@
 
                 <%--Export Selection--%>
                 <asp:Panel runat="server" ID="PnlExportSelection">
-                    <h4>Select an option:</h4>
+                    <h4>Select an option for export:</h4>
                     <asp:RadioButtonList ID="RblExportSelection" runat="server" RepeatLayout="UnorderedList">
                         <asp:ListItem Text="Single Item" Value="single"></asp:ListItem>
                         <asp:ListItem Text="Multiple Items" Value="multiple"></asp:ListItem>
@@ -129,7 +131,7 @@
 
                 <%--Export Single Item--%>
                 <asp:Panel runat="server" ID="PnlExportSingle" Visible="false">
-                    <h4>Enter item ID to export to .csv file:</h4>
+                    <h4>Enter the Item ID to export to .csv file:</h4>
                     <p>Example: {923FF496-F233-4152-A6A8-D9964B08C54E}</p>
                     <p>
                         <asp:TextBox ID="TxtExportSingle" runat="server" CssClass="textbox"></asp:TextBox>
@@ -143,7 +145,7 @@
 
                 <%--Export Multiple Items--%>
                 <asp:Panel runat="server" ID="PnlExportMultiple" Visible="false">
-                    <h4>Enter parent item ID (Children items will be exported to .csv file):</h4>
+                    <h4>Enter Parent Item ID (Children items will be exported to .csv file):</h4>
                     <p>Example: {A91FD891-C477-45F5-B20A-7CFA7F8B53E5}</p>
                     <p>
                         <asp:TextBox ID="TxtExportMultiple" runat="server" CssClass="textbox"></asp:TextBox>

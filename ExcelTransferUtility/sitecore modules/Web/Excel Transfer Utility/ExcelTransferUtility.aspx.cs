@@ -40,7 +40,6 @@ namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility
         protected Button BtnImportSelection;
         protected Button BtnNextImportSelection;
         protected Button BtnUpload;
-        protected DropDownList DdlItemName;
         protected DropDownList DdlSheetNames;
         protected HtmlForm Form1;
         protected FileUpload FuFileToImport;
@@ -79,12 +78,22 @@ namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility
 
         #region Page Control Methods
 
+        /// <summary>
+        /// When the Import button is clicked upon
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void ImportSelection_Click(object sender, EventArgs e)
         {
             PnlImportUtility.Visible = true;
             PnlTransferSelection.Visible = false;
         }
 
+        /// <summary>
+        /// Uploads Excel file to be used for Import
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void Upload_Click(object sender, EventArgs e)
         {
             if (!FuFileToImport.HasFile)
@@ -117,6 +126,11 @@ namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility
             }
         }
 
+        /// <summary>
+        /// Allows you select sheet name and template ID for imported items
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void NextImportSelection_Click(object sender, EventArgs e)
         {
             try
@@ -143,8 +157,6 @@ namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility
                 PnlImportMapping.Visible = true;
                 LvImportMapping.DataSource = dictionary.Values.ToList();
                 LvImportMapping.DataBind();
-                DdlItemName.DataSource = dictionary.Values.ToList();
-                DdlItemName.DataBind();
             }
             catch (Exception ex)
             {
@@ -152,98 +164,165 @@ namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility
             }
         }
 
+        /// <summary>
+        /// Gets the fields associated with the template specified
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void ImportMapping_ItemDataBound(object sender, ListViewItemEventArgs e)
         {
-            if (e.Item.ItemType != ListViewItemType.DataItem)
-                return;
-            var listViewDataItem = e.Item as ListViewDataItem;
-            if (listViewDataItem == null)
-                return;
-            var str = listViewDataItem.DataItem as string;
-            var dropDownList = listViewDataItem.FindControl("ddlImportTo") as DropDownList;
-            var label = listViewDataItem.FindControl("lblImportFrom") as Label;
-            if (dropDownList == null || label == null || string.IsNullOrWhiteSpace(str))
-                return;
-            label.Text = str;
-            dropDownList.Attributes.Add("importId", str);
-            var path = HdnTemplateId.Value;
-            if (string.IsNullOrWhiteSpace(path))
-                return;
-            var obj1 = _master.GetItem(path);
-            if (obj1 == null)
-                return;
-            var list =
-                obj1.Axes.GetDescendants()
-                    .Where(descendant => descendant.TemplateID.ToString() == "{455A3E98-A627-4B40-8035-E683A0331AC7}")
-                    .ToList();
-            if (!list.Any())
-                return;
-            foreach (var obj2 in list)
-                dropDownList.Items.Add(new ListItem(obj2.Name, obj2.Name));
+            if (e.Item.ItemType == ListViewItemType.DataItem)
+            {
+                var listViewDataItem = e.Item as ListViewDataItem;
+
+                if (listViewDataItem != null && listViewDataItem.DataItemIndex > 0)
+                {
+                    var str = listViewDataItem.DataItem as string;
+                    var dropDownList = listViewDataItem.FindControl("ddlImportTo") as DropDownList;
+                    var label = listViewDataItem.FindControl("lblImportFrom") as Label;
+
+                    if (dropDownList != null && label != null && !string.IsNullOrWhiteSpace(str))
+                    {
+                        label.Text = str;
+                        dropDownList.Attributes.Add("importId", str);
+
+                        var path = HdnTemplateId.Value;
+
+                        if (!string.IsNullOrWhiteSpace(path))
+                        {
+                            var obj1 = _master.GetItem(path);
+
+                            if (obj1 != null)
+                            {
+                                var list =
+                                    obj1.Axes.GetDescendants()
+                                        .Where(
+                                            descendant =>
+                                                descendant.TemplateID.ToString() ==
+                                                "{455A3E98-A627-4B40-8035-E683A0331AC7}")
+                                        .ToList();
+
+                                if (list.Any())
+                                {
+                                    foreach (var obj2 in list)
+                                    {
+                                        dropDownList.Items.Add(new ListItem(obj2.Name, obj2.Name));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    var str = listViewDataItem.DataItem as string;
+                    var dropDownList = listViewDataItem.FindControl("ddlImportTo") as DropDownList;
+                    var label = listViewDataItem.FindControl("lblImportFrom") as Label;
+
+                    if (dropDownList != null && label != null && !string.IsNullOrWhiteSpace(str))
+                    {
+                        label.Text = str;
+                        dropDownList.Visible = false;
+                    }
+                }
+            }
         }
 
+        /// <summary>
+        /// Performs the Import into Sitecore
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void Import_Click(object sender, EventArgs e)
         {
             try
             {
-                var str1 = TxtTemplateId.Text.Trim();
+                // Trim the template ID
+                var templateId = TxtTemplateId.Text.Trim();
+
+                // Get the file name value
                 var fileName = HdnFileName.Value;
-                if (string.IsNullOrWhiteSpace(fileName) || string.IsNullOrWhiteSpace(str1))
+
+                // Ensure strings are present before proceeding
+                if (string.IsNullOrWhiteSpace(fileName) || string.IsNullOrWhiteSpace(templateId))
                     return;
+
+                // Prepare for Import
                 var file = new FileInfo(fileName);
                 var workbook = Workbook.getWorkbook(file);
                 var sheet = workbook.getSheet(HdnSheetName.Value);
                 var parentItemId = TxtParentItemId.Text.Trim();
                 var dictionary = new Dictionary<int, string>();
 
+                // Perform the Import
+                // Foreach row...
                 for (var row = 0; row < sheet.getRows(); ++row)
                 {
-                    var selectedValue = DdlItemName.SelectedValue;
                     Item newItem = null;
-
+                    
+                    // Foreach column in this row...
                     for (var index = 0; index < sheet.getColumns(); ++index)
                     {
+                        // If this is the header row...
                         if (row == 0)
                         {
                             dictionary.Add(index, sheet.getCell(index, row).getContents());
                         }
+                        // Else if it is not the header row..
                         else
                         {
-                            var str2 = dictionary[index].ToLower();
                             if (newItem == null)
-                                newItem = CreateSitecoreItem(parentItemId, selectedValue, str1);
-                            var list1 = LvImportMapping.Items.ToList();
-                            if (!list1.Any()) continue;
-
-                            foreach (var control in list1)
                             {
-                                var mappedDropdown = GetMappedDropdown(control.Controls);
-                                if (mappedDropdown == null || mappedDropdown.Attributes["importId"].ToLower() != str2)
-                                    continue;
-                                var sitecoreFieldName = mappedDropdown.SelectedValue;
-                                var sitecoreFieldType = string.Empty;
-                                var contents = sheet.getCell(index, row).getContents();
-                                var obj1 = _master.GetItem(str1);
+                                newItem = new UtilityMethods().CreateSitecoreItem(parentItemId, sheet.getCell(0, row).getContents(), templateId);
+                            }
 
-                                if (obj1 != null)
+                            var lvImportMappingList = LvImportMapping.Items.ToList();
+
+                            if (lvImportMappingList.Any())
+                            {
+                                // Don't get the control for the first column in the spreadsheet as that is the item name
+                                var i = 0;
+
+                                foreach (var control in lvImportMappingList)
                                 {
-                                    var list2 =
-                                        obj1.Axes.GetDescendants()
-                                            .Where(
-                                                descendant =>
-                                                    descendant.TemplateID.ToString() ==
-                                                    Constants.FieldIds.TemplateFieldId)
-                                            .ToList();
-                                    if (list2.Any())
+                                    if (i > 0)
                                     {
-                                        var obj2 =
-                                            list2.FirstOrDefault(item => item.Name == sitecoreFieldName);
-                                        if (obj2 != null)
-                                            sitecoreFieldType = obj2["Type"];
-                                    }
-                                }
+                                        var mappedDropdown = new UtilityMethods().GetMappedDropdown(control.Controls);
+                                        var importId = dictionary[index].ToLower();
 
-                                UpdateSitecoreFields(newItem, sitecoreFieldName, sitecoreFieldType, contents);
+                                        if (mappedDropdown != null &&
+                                            mappedDropdown.Attributes["importId"].ToLower() == importId)
+                                        {
+                                            var sitecoreFieldName = mappedDropdown.SelectedValue;
+                                            var sitecoreFieldType = string.Empty;
+                                            var contents = sheet.getCell(index, row).getContents();
+                                            var templateItem = _master.GetItem(templateId);
+
+                                            if (templateItem != null)
+                                            {
+                                                var fieldList =
+                                                    templateItem.Axes.GetDescendants()
+                                                        .Where(
+                                                            descendant =>
+                                                                descendant.TemplateID.ToString() ==
+                                                                Constants.FieldIds.TemplateFieldId)
+                                                        .ToList();
+
+                                                if (fieldList.Any())
+                                                {
+                                                    var sitecoreField =
+                                                        fieldList.FirstOrDefault(item => item.Name == sitecoreFieldName);
+                                                    if (sitecoreField != null)
+                                                        sitecoreFieldType = sitecoreField["Type"];
+                                                }
+                                            }
+
+                                            UpdateSitecoreFields(newItem, sitecoreFieldName, sitecoreFieldType, contents);
+                                        }
+                                    }
+
+                                    i++;
+                                }
                             }
                         }
                     }
@@ -260,12 +339,22 @@ namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility
             }
         }
 
+        /// <summary>
+        /// When the Import button is clicked upon
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void ExportSelection_Click(object sender, EventArgs e)
         {
             PnlTransferSelection.Visible = false;
             PnlExportUtility.Visible = true;
         }
 
+        /// <summary>
+        /// When Export button is selected
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void ExportSelectionNext_Click(object sender, EventArgs e)
         {
             var selectedValue = RblExportSelection.SelectedValue;
@@ -291,6 +380,11 @@ namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility
                 LblStatus.Text = "Please make a selection then click the Next button";
         }
 
+        /// <summary>
+        /// When Single Item is selected
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void ExportSingle_Click(object sender, EventArgs e)
         {
             var exportItems = new List<Item>();
@@ -319,6 +413,11 @@ namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility
                 LblStatus.Text = "Please enter item ID";
         }
 
+        /// <summary>
+        /// When Multiple Items is selected
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void ExportMultiple_Click(object sender, EventArgs e)
         {
             var list = new List<Item>();
@@ -351,41 +450,56 @@ namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility
 
         #region Private Utility Methods
 
+        /// <summary>
+        /// Performs the Exports of item/s
+        /// </summary>
+        /// <param name="exportItems"></param>
         private void ExportToCsv(IReadOnlyCollection<Item> exportItems)
         {
             var csvExport = new CsvExport();
 
-            foreach (var obj1 in exportItems)
+            foreach (var item in exportItems)
             {
                 csvExport.AddRow();
-                var obj2 = _master.GetItem(obj1.TemplateID);
-                if (obj2 == null) continue;
-                var list =
-                    obj2.Axes.GetDescendants()
-                        .Where(
-                            descendant =>
-                                descendant.TemplateID.ToString() == Constants.FieldIds.TemplateFieldId)
-                        .ToList();
-                if (!list.Any()) continue;
 
-                foreach (var obj3 in list)
+                // Add the item name as the first column in the row
+                csvExport["Item Name"] = item.Name;
+
+                // Get the fields in the item and add the data from the item/s
+                var templateItem = _master.GetItem(item.TemplateID);
+
+                if (templateItem != null)
                 {
-                    var name = obj3.Name;
-                    var str = obj1[name];
+                    var fieldList =
+                        templateItem.Axes.GetDescendants()
+                            .Where(
+                                descendant =>
+                                    descendant.TemplateID.ToString() == Constants.FieldIds.TemplateFieldId)
+                            .ToList();
 
-                    if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(str)) continue;
-
-                    switch (str)
+                    if (fieldList.Any())
                     {
-                        case "0":
-                            str = "false";
-                            break;
-                        case "1":
-                            str = "true";
-                            break;
-                    }
+                        foreach (var field in fieldList)
+                        {
+                            var fieldName = field.Name;
+                            var fieldValue = item[fieldName];
 
-                    csvExport[name] = str;
+                            if (!string.IsNullOrWhiteSpace(fieldName) && !string.IsNullOrWhiteSpace(fieldValue))
+                            {
+                                switch (fieldValue)
+                                {
+                                    case "0":
+                                        fieldValue = "false";
+                                        break;
+                                    case "1":
+                                        fieldValue = "true";
+                                        break;
+                                }
+
+                                csvExport[fieldName] = fieldValue;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -404,36 +518,13 @@ namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility
             }
         }
 
-        private static DropDownList GetMappedDropdown(IEnumerable controlCollection)
-        {
-            DropDownList dropDownList = null;
-
-            foreach (
-                var control in
-                    controlCollection.Cast<Control>()
-                        .Where(control => control.GetType().ToString() == "System.Web.UI.WebControls.DropDownList"))
-            {
-                dropDownList = control as DropDownList;
-            }
-
-            return dropDownList;
-        }
-
-        private Item CreateSitecoreItem(string parentItemId, string itemName, string templateId)
-        {
-            Item obj1 = null;
-
-            using (new SecurityDisabler())
-            {
-                var obj2 = _master.GetItem(parentItemId);
-                if (obj2 == null) return null;
-                TemplateItem template = _master.GetItem(templateId);
-                obj1 = obj2.Add(itemName, template);
-            }
-
-            return obj1;
-        }
-
+        /// <summary>
+        /// Updates the item fields with imported content
+        /// </summary>
+        /// <param name="newItem"></param>
+        /// <param name="sitecoreFieldName"></param>
+        /// <param name="sitecoreFieldType"></param>
+        /// <param name="sitecoreValue"></param>
         private void UpdateSitecoreFields(Item newItem, string sitecoreFieldName, string sitecoreFieldType,
             string sitecoreValue)
         {
@@ -449,16 +540,16 @@ namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility
                         if (sitecoreFieldType == Constants.FieldIds.MultiLineTextFieldId || sitecoreFieldType == Constants.FieldIds.RichTextFieldId ||
                             sitecoreFieldType == Constants.FieldIds.SingleLineFieldId || sitecoreFieldType == Constants.FieldIds.DropLinkFieldId ||
                             sitecoreFieldType == Constants.FieldIds.DropListFieldId)
-                            SetSimpleField(newItem, sitecoreFieldName, sitecoreValue);
+                            new UtilityMethods().SetSimpleField(newItem, sitecoreFieldName, sitecoreValue);
                         else if (sitecoreFieldType == Constants.FieldIds.CheckboxFieldId && sitecoreValue.ToLower() == "true")
-                            SetCheckboxField(newItem, sitecoreFieldName);
+                            new UtilityMethods().SetCheckboxField(newItem, sitecoreFieldName);
                         else if (sitecoreFieldType == Constants.FieldIds.DropListFieldId || sitecoreFieldType == Constants.FieldIds.MultiListFieldId ||
                                  sitecoreFieldType == Constants.FieldIds.TreeListFieldId || sitecoreFieldType == Constants.FieldIds.TreeListExFieldId)
-                            AddToMultiListField(newItem, sitecoreFieldName, sitecoreValue);
+                            new UtilityMethods().AddToMultiListField(newItem, sitecoreFieldName, sitecoreValue);
                         else if (sitecoreFieldType == Constants.FieldIds.GeneralLinkFieldId)
-                            SetLinkField(newItem, sitecoreFieldName, sitecoreValue);
+                            new UtilityMethods().SetLinkField(newItem, sitecoreFieldName, sitecoreValue);
                         else
-                            SetSimpleField(newItem, sitecoreFieldName, sitecoreValue);
+                            new UtilityMethods().SetSimpleField(newItem, sitecoreFieldName, sitecoreValue);
                     }
                     newItem.Editing.EndEdit();
                 }
@@ -470,75 +561,6 @@ namespace ExcelTransferUtility.sitecore_modules.Web.Excel_Transfer_Utility
                 }
             }
         }
-
-        private static void SetSimpleField(BaseItem newItem, string sitecoreFieldName, string sitecoreValue)
-        {
-            newItem.Fields[sitecoreFieldName].Value = sitecoreValue;
-        }
-
-        private static void SetLinkField(BaseItem newItem, string sitecoreFieldName, string sitecoreValue)
-        {
-            LinkField linkField = newItem.Fields[sitecoreFieldName];
-
-            if (linkField == null)
-                return;
-
-            linkField.Url = sitecoreValue;
-        }
-
-        private static void SetCheckboxField(BaseItem newItem, string sitecoreFieldName)
-        {
-            CheckboxField checkboxField = newItem.Fields[sitecoreFieldName];
-
-            if (checkboxField == null)
-                return;
-
-            checkboxField.Checked = true;
-        }
-
-        private static void AddToMultiListField(BaseItem item, string sitecoreFieldName, string sitecoreValue)
-        {
-            MultilistField multilistField = item.Fields[sitecoreFieldName];
-            multilistField?.Add(sitecoreValue);
-        }
-
-        private string GetMultiListFieldValues(IEnumerable<Item> list)
-        {
-            var stringBuilder = new StringBuilder();
-            var enumerable = list as IList<Item> ?? list.ToList();
-            if (!enumerable.Any()) return stringBuilder.ToString();
-            var num = 1;
-
-            foreach (var obj in enumerable)
-            {
-                stringBuilder.Append(obj.Name);
-                if (num < enumerable.Count())
-                    stringBuilder.Append("|");
-                ++num;
-            }
-
-            return stringBuilder.ToString();
-        }
-
-        private string GetLinkFieldValue(LinkField linkField)
-        {
-            var str = string.Empty;
-
-            if (!string.IsNullOrWhiteSpace(linkField?.Url))
-                str = linkField.Url;
-
-            return str;
-        }
-
-        private string GetCheckBoxFieldValue(bool? checkBoxFieldValue)
-        {
-            var str = "false";
-
-            if (checkBoxFieldValue.HasValue && checkBoxFieldValue.GetValueOrDefault(false))
-                str = "true";
-
-            return str;
-        } 
 
         #endregion
     }
