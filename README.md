@@ -8,7 +8,8 @@ REQUIREMENTS:
 Import requirements are as follows:
 
 1. Microsoft Excel 97-2003 files only (Convert newer files to 97-2003 before uploading)
-2. Headers are in the first column of the spreadsheet
+2. Headers are in the first row of the spreadsheet
+3. Item names are in the first column of the spreadsheet
 
 INSTALLATION:
 
